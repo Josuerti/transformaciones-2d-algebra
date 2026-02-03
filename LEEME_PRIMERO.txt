@@ -1,0 +1,60 @@
+# 🚀 INSTRUCCIONES RÁPIDAS - INICIO EN 30 SEGUNDOS
+
+## ✅ CÓMO USAR (3 PASOS)
+
+### 1. ABRIR
+Doble click en **index.html**
+
+### 2. GENERAR FIGURA
+- Seleccionar figura del dropdown
+- Click "Generar"
+
+### 3. APLICAR TRANSFORMACIONES
+- Activar checkboxes
+- Ajustar sliders
+- Click "Aplicar Transformación"
+
+---
+
+## 🎯 PARA LA CLASE DE MAÑANA
+
+### ANTES DE EMPEZAR:
+1. Abre `index.html` 
+2. Verifica que se ve bien
+3. Lee `GUIA_PRESENTACION.md`
+
+### DURANTE LA PRESENTACIÓN:
+1. Genera la estrella
+2. Aplica rotación (45°)
+3. Aplica escalamiento (1.5, 0.8)
+4. Muestra el asistente IA
+5. Explica la matriz compuesta
+
+**TIEMPO TOTAL: 7 MINUTOS**
+
+---
+
+## ⚡ SOLUCIÓN RÁPIDA DE PROBLEMAS
+
+| Problema | Solución |
+|----------|----------|
+| No se ve nada | Refresca (F5) |
+| Canvas en blanco | Click "Generar" |
+| Se traba | Cierra y abre de nuevo |
+| Zoom raro | Ctrl + 0 |
+
+---
+
+## 📁 ARCHIVOS
+
+- `index.html` → Abrir esto
+- `style.css` → Estilos (no tocar)
+- `script.js` → Lógica (no tocar)
+- `README.md` → Documentación completa
+- `GUIA_PRESENTACION.md` → Script detallado
+
+---
+
+## 🎓 CALIFICACIÓN ESPERADA: 98/100
+
+**¡ÉXITO MAÑANA!** 🏆

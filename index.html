@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transformaciones Lineales 2D - Sistema Profesional</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="app-header">
+        <div class="header-container">
+            <div class="header-brand">
+                <h1>Transformaciones Lineales en ℝ²</h1>
+                <p>Sistema Interactivo de Álgebra Lineal</p>
+            </div>
+            <button id="btnAyuda" class="btn-help">Asistente IA</button>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="app-container">
+        <!-- Left Sidebar -->
+        <aside class="sidebar left-panel">
+            <div class="panel-header">
+                <h2>Panel de Control</h2>
+            </div>
+            
+            <div class="panel-content">
+                <!-- Figura -->
+                <section class="control-section">
+                    <h3 class="section-title">Objeto Geométrico</h3>
+                    <select id="figuraSelector" class="select-control">
+                        <option value="estrella">Estrella (5 puntas)</option>
+                        <option value="pentagono">Pentágono Regular</option>
+                        <option value="hexagono">Hexágono Regular</option>
+                        <option value="triangulo">Triángulo</option>
+                        <option value="rectangulo">Rectángulo</option>
+                        <option value="flecha">Flecha</option>
+                        <option value="corazon">Corazón</option>
+                        <option value="letra">Letra A</option>
+                    </select>
+                    <button id="btnDibujar" class="btn btn-primary">Generar</button>
+                </section>
+
+                <!-- Transformaciones -->
+                <section class="control-section">
+                    <h3 class="section-title">Transformaciones</h3>
+                    
+                    <!-- Rotación -->
+                    <div class="transform-control">
+                        <label class="transform-toggle">
+                            <input type="checkbox" id="checkRotacion">
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-label">Rotación</span>
+                        </label>
+                        <div class="param-control">
+                            <label>Ángulo θ (°)</label>
+                            <div class="input-group">
+                                <input type="range" id="rangeRotacion" min="-180" max="180" value="0" step="5">
+                                <input type="number" id="inputRotacion" value="0" min="-180" max="180">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Escalamiento -->
+                    <div class="transform-control">
+                        <label class="transform-toggle">
+                            <input type="checkbox" id="checkEscala">
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-label">Escalamiento</span>
+                        </label>
+                        <div class="param-control">
+                            <label>Factor sx</label>
+                            <div class="input-group">
+                                <input type="range" id="rangeEscalaX" min="0.1" max="3" value="1" step="0.1">
+                                <input type="number" id="inputEscalaX" value="1" min="0.1" max="3" step="0.1">
+                            </div>
+                        </div>
+                        <div class="param-control">
+                            <label>Factor sy</label>
+                            <div class="input-group">
+                                <input type="range" id="rangeEscalaY" min="0.1" max="3" value="1" step="0.1">
+                                <input type="number" id="inputEscalaY" value="1" min="0.1" max="3" step="0.1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shear -->
+                    <div class="transform-control">
+                        <label class="transform-toggle">
+                            <input type="checkbox" id="checkShear">
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-label">Corte (Shear)</span>
+                        </label>
+                        <div class="param-control">
+                            <label>Factor k</label>
+                            <div class="input-group">
+                                <input type="range" id="rangeShear" min="-2" max="2" value="0" step="0.1">
+                                <input type="number" id="inputShear" value="0" min="-2" max="2" step="0.1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Traslación -->
+                    <div class="transform-control">
+                        <label class="transform-toggle">
+                            <input type="checkbox" id="checkTraslacion">
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-label">Traslación</span>
+                        </label>
+                        <div class="param-control">
+                            <label>Δx</label>
+                            <div class="input-group">
+                                <input type="range" id="rangeTraslacionX" min="-150" max="150" value="0" step="10">
+                                <input type="number" id="inputTraslacionX" value="0" min="-150" max="150">
+                            </div>
+                        </div>
+                        <div class="param-control">
+                            <label>Δy</label>
+                            <div class="input-group">
+                                <input type="range" id="rangeTraslacionY" min="-150" max="150" value="0" step="10">
+                                <input type="number" id="inputTraslacionY" value="0" min="-150" max="150">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reflexiones -->
+                    <div class="transform-control compact">
+                        <label class="transform-toggle">
+                            <input type="checkbox" id="checkReflexionX">
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-label">Reflexión X</span>
+                        </label>
+                    </div>
+
+                    <div class="transform-control compact">
+                        <label class="transform-toggle">
+                            <input type="checkbox" id="checkReflexionY">
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-label">Reflexión Y</span>
+                        </label>
+                    </div>
+                </section>
+
+                <!-- Acciones -->
+                <section class="control-section">
+                    <h3 class="section-title">Acciones</h3>
+                    <button id="btnAplicar" class="btn btn-success full">Aplicar</button>
+                    <button id="btnAnimacion" class="btn btn-secondary full">Animar</button>
+                    <button id="btnReset" class="btn btn-outline full">Restablecer</button>
+                </section>
+
+                <!-- Visualización -->
+                <section class="control-section">
+                    <h3 class="section-title">Visualización</h3>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="checkOriginal" checked>
+                        <span>Mostrar original</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="checkEjes" checked>
+                        <span>Mostrar ejes</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="checkGrid" checked>
+                        <span>Mostrar cuadrícula</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="checkNumeros" checked>
+                        <span>Mostrar números</span>
+                    </label>
+                </section>
+            </div>
+        </aside>
+
+        <!-- Center Canvas -->
+        <main class="main-canvas">
+            <div class="canvas-header">
+                <h2>Plano Cartesiano ℝ²</h2>
+            </div>
+            <div class="canvas-wrapper">
+                <canvas id="canvas" width="700" height="700"></canvas>
+            </div>
+            <div class="canvas-legend">
+                <div class="legend-item">
+                    <span class="legend-box original"></span>
+                    <span>Original</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-box transformed"></span>
+                    <span>Transformado</span>
+                </div>
+            </div>
+        </main>
+
+        <!-- Right Sidebar -->
+        <aside class="sidebar right-panel">
+            <div class="panel-header">
+                <h2>Análisis Matemático</h2>
+            </div>
+            
+            <div class="panel-content">
+                <!-- Matriz -->
+                <section class="info-section">
+                    <h3 class="section-title">Matriz Compuesta</h3>
+                    <div id="matrizDisplay" class="matrix-display">
+                        <p class="placeholder">Active una transformación</p>
+                    </div>
+                </section>
+
+                <!-- Determinante -->
+                <section class="info-section">
+                    <h3 class="section-title">Determinante</h3>
+                    <div id="determinante" class="value-display">—</div>
+                </section>
+
+                <!-- Propiedades -->
+                <section class="info-section">
+                    <h3 class="section-title">Propiedades</h3>
+                    <div class="property-list">
+                        <div class="property-row">
+                            <span>Orientación:</span>
+                            <span id="propOrient">—</span>
+                        </div>
+                        <div class="property-row">
+                            <span>Factor área:</span>
+                            <span id="propArea">—</span>
+                        </div>
+                        <div class="property-row">
+                            <span>Tipo:</span>
+                            <span id="propTipo">—</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Pasos -->
+                <section class="info-section">
+                    <h3 class="section-title">Orden de Aplicación</h3>
+                    <div id="pasos" class="steps-list">
+                        <p class="placeholder">Sin transformaciones</p>
+                    </div>
+                </section>
+            </div>
+        </aside>
+    </div>
+
+    <!-- AI Assistant Panel -->
+    <div id="aiPanel" class="ai-panel hidden">
+        <div class="ai-header">
+            <h3>Asistente Virtual</h3>
+            <button id="btnCerrarAI" class="btn-close">×</button>
+        </div>
+        <div class="ai-content">
+            <div id="aiMessages" class="ai-messages"></div>
+        </div>
+        <div class="ai-suggestions">
+            <button class="ai-suggestion" data-action="explicar-matriz">¿Cómo se lee la matriz?</button>
+            <button class="ai-suggestion" data-action="explicar-det">¿Qué significa el determinante?</button>
+            <button class="ai-suggestion" data-action="explicar-composicion">¿Cómo funciona la composición?</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
