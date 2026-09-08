@@ -6,6 +6,21 @@ const ctx = canvas.getContext('2d');
 let figuraOriginal = [];
 let figuraActual = [];
 let animando = false;
+let intervaloAnimacion = null;
+function detenerAnimacion() {
+    clearInterval(intervaloAnimacion);
+    intervaloAnimacion = null;
+    animando = false;
+    const btn = document.getElementById('btnAnimacion');
+    btn.textContent = 'Animar';
+    btn.disabled = false;
+}
+
+function esIsometria(M) {
+    const [a,b] = M[0], [c,d] = M[1];
+    const eps = 1e-9;
+    return Math.abs(a*a+c*c-1)<eps && Math.abs(b*b+d*d-1)<eps && Math.abs(a*b+c*d)<eps;
+}
 
 const ESCALA = 40;
 const ORIGEN_X = canvas.width / 2;
@@ -216,32 +231,32 @@ function obtenerMatrizCompuesta() {
     
     if (document.getElementById('checkRotacion').checked) {
         const t = parseFloat(document.getElementById('inputRotacion').value);
-        M = multiplicarMatrices(M, matrizRotacion(t));
+        M = multiplicarMatrices(matrizRotacion(t), M);
         pasos.push(`Rotación (θ = ${t}°)`);
     }
     if (document.getElementById('checkEscala').checked) {
         const sx = parseFloat(document.getElementById('inputEscalaX').value);
         const sy = parseFloat(document.getElementById('inputEscalaY').value);
-        M = multiplicarMatrices(M, matrizEscalamiento(sx, sy));
+        M = multiplicarMatrices(matrizEscalamiento(sx, sy), M);
         pasos.push(`Escalamiento (${sx}, ${sy})`);
     }
     if (document.getElementById('checkShear').checked) {
         const k = parseFloat(document.getElementById('inputShear').value);
-        M = multiplicarMatrices(M, matrizShearX(k));
+        M = multiplicarMatrices(matrizShearX(k), M);
         pasos.push(`Shear (k=${k})`);
     }
     if (document.getElementById('checkReflexionX').checked) {
-        M = multiplicarMatrices(M, matrizReflexionX());
+        M = multiplicarMatrices(matrizReflexionX(), M);
         pasos.push('Reflexión X');
     }
     if (document.getElementById('checkReflexionY').checked) {
-        M = multiplicarMatrices(M, matrizReflexionY());
+        M = multiplicarMatrices(matrizReflexionY(), M);
         pasos.push('Reflexión Y');
     }
     if (document.getElementById('checkTraslacion').checked) {
         const dx = parseFloat(document.getElementById('inputTraslacionX').value) / ESCALA;
         const dy = parseFloat(document.getElementById('inputTraslacionY').value) / ESCALA;
-        M = multiplicarMatrices(M, matrizTraslacion(dx, dy));
+        M = multiplicarMatrices(matrizTraslacion(dx, dy), M);
         pasos.push(`Traslación (${dx.toFixed(2)}, ${dy.toFixed(2)})`);
     }
     
@@ -286,9 +301,9 @@ function mostrarMatriz(M, pasos) {
     
     const det = calcularDeterminante(M);
     document.getElementById('determinante').textContent = `det(M) = ${det.toFixed(6)}`;
-    document.getElementById('propOrient').textContent = det > 0 ? 'Preservada' : 'Invertida';
+    document.getElementById('propOrient').textContent = Math.abs(det) < 1e-12 ? 'Colapsada' : det > 0 ? 'Preservada' : 'Invertida';
     document.getElementById('propArea').textContent = `${Math.abs(det).toFixed(4)}×`;
-    document.getElementById('propTipo').textContent = Math.abs(det - 1) < 0.001 ? 'Isometría' : 'General';
+    document.getElementById('propTipo').textContent = esIsometria(M) ? 'Isometría' : 'General';
     
     const pasosHTML = pasos.map((p, i) => `
         <div class="step-item">
@@ -300,6 +315,7 @@ function mostrarMatriz(M, pasos) {
 }
 
 function aplicar() {
+    detenerAnimacion();
     if (figuraOriginal.length === 0) {
         alert('Genere primero una figura');
         return;
@@ -318,11 +334,12 @@ function animar() {
     btn.textContent = 'Animando...';
     btn.disabled = true;
     
-    const { matriz: MF } = obtenerMatrizCompuesta();
+    const { matriz: MF, pasos } = obtenerMatrizCompuesta();
+    mostrarMatriz(MF, pasos);
     let paso = 0;
     const total = 60;
     
-    const int = setInterval(() => {
+    intervaloAnimacion = setInterval(() => {
         paso++;
         const t = paso / total;
         const M = [
@@ -333,7 +350,7 @@ function animar() {
         figuraActual = aplicarTransformacion(figuraOriginal, M);
         dibujarTodo();
         if (paso >= total) {
-            clearInterval(int);
+            detenerAnimacion();
             animando = false;
             btn.textContent = 'Animar';
             btn.disabled = false;
@@ -344,6 +361,7 @@ function animar() {
 }
 
 function inicializar() {
+    detenerAnimacion();
     const sel = document.getElementById('figuraSelector').value;
     const figs = {
         estrella: generarEstrella(),
@@ -357,11 +375,13 @@ function inicializar() {
     };
     figuraOriginal = figs[sel] || generarEstrella();
     figuraActual = [...figuraOriginal];
+    mostrarMatriz([[1,0,0],[0,1,0],[0,0,1]], []);
     dibujarTodo();
     explicarAccion('generar', { figura: sel, vertices: figuraOriginal.length });
 }
 
 function resetear() {
+    detenerAnimacion();
     figuraActual = [...figuraOriginal];
     document.getElementById('inputRotacion').value = 0;
     document.getElementById('rangeRotacion').value = 0;
@@ -401,9 +421,9 @@ Ejemplo: Si a=0.707, b=-0.707, indica rotación 45°`,
 
     "explicar-det": `DETERMINANTE
 
-det = 1 → Área preservada
-det > 1 → Área aumenta
-0 < det < 1 → Área disminuye
+|det| = 1 → Área preservada
+|det| > 1 → Área aumenta
+0 < |det| < 1 → Área disminuye
 det = 0 → Colapso
 det < 0 → Inversión orientación
 
@@ -459,7 +479,7 @@ function explicarAccion(tipo, d) {
             if (d.transformaciones === 0) {
                 msg = 'No hay transformaciones activas.';
             } else {
-                msg = `Apliqué ${d.transformaciones} transformación(es). Det=${d.det.toFixed(4)} → el área ${Math.abs(d.det - 1) < 0.01 ? 'se preservó' : d.det > 1 ? 'aumentó' : 'disminuyó'}.`;
+                msg = `Apliqué ${d.transformaciones} transformación(es). Det=${d.det.toFixed(4)} → el área ${Math.abs(Math.abs(d.det) - 1) < 1e-9 ? 'se preservó' : Math.abs(d.det) > 1 ? 'aumentó' : 'disminuyó'}.`;
             }
             break;
         case 'animar':
@@ -477,7 +497,11 @@ function sync(rid, iid) {
     const r = document.getElementById(rid);
     const i = document.getElementById(iid);
     r.addEventListener('input', () => i.value = r.value);
-    i.addEventListener('input', () => r.value = i.value);
+    i.addEventListener('change', () => {
+        const value = Number(i.value);
+        r.value = Number.isFinite(value) && i.value.trim() !== '' ? value : r.value;
+        i.value = r.value;
+    });
 }
 
 sync('rangeRotacion', 'inputRotacion');
@@ -512,3 +536,4 @@ window.addEventListener('load', () => {
     mostrarMatriz([[1,0,0],[0,1,0],[0,0,1]], []);
     console.log('Sistema cargado correctamente');
 });
+
