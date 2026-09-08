@@ -2,7 +2,7 @@
 
 ## Descripción
 
-Aplicación web profesional para la visualización interactiva de transformaciones lineales en ℝ², desarrollada con estándares de la industria. Incluye un asistente virtual inteligente que explica en tiempo real los conceptos matemáticos.
+Aplicación web profesional para la visualización interactiva de transformaciones lineales en ℝ², desarrollada con estándares de la industria. Incluye un asistente con explicaciones predefinidas (sin conexión a un modelo de IA) que explica en tiempo real los conceptos matemáticos.
 
 ## Características Principales
 
@@ -98,17 +98,23 @@ Matrices 3×3 en lugar de 2×2
 
 ### Composición
 ```
-C = T · H · S · R
+C = T · Fy · Fx · H · S · R
+Fx y Fy son las reflexiones; una transformación desactivada es la identidad.
 Orden: derecha → izquierda
 ```
 
 ### Determinante
 ```
-det = 1  → Área preservada
-det > 1  → Área aumenta
-det < 1  → Área disminuye
-det < 0  → Inversión orientación
+|det| = 1      → Área preservada
+|det| > 1      → Área aumenta
+0 < |det| < 1  → Área disminuye
+det = 0        → Colapso
+det < 0        → Inversión de orientación
 ```
+
+Conservar área no implica conservar distancias. Una isometría requiere que la parte lineal cumpla AᵀA = I; también puede invertir la orientación.
+
+La traslación es una transformación afín, representada aquí mediante coordenadas homogéneas.
 
 ## Propiedades Calculadas
 
@@ -257,7 +263,7 @@ MIT License - Uso educativo y académico.
 
 Para reportar errores o sugerencias:
 - Crear issue en GitHub
-- Contacto: [email institucional]
+- Adjuntar pasos para reproducir, resultado esperado y captura si corresponde.
 
 ---
 
@@ -268,3 +274,8 @@ Para reportar errores o sugerencias:
 **Canvas optimizado**: 700×700px
 
 **Layout responsive**: 320px + flex + 320px
+
+
+## Verificación
+
+Con Node.js: `node tests.js`. Comprueba composición, isometrías, colapso y cancelación de animaciones.
